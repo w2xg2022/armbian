@@ -7,12 +7,16 @@ name: Build Armbian arm64 server image
 
 on:
   repository_dispatch:
+  workflow_run:
+    workflows: ["Compile the kernel"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       set_release:
         description: "Select OS Release."
         required: false
-        default: "all"
+        default: "trixie"
         type: choice
         options:
           - all
@@ -23,7 +27,7 @@ on:
       armbian_board:
         description: "Select device board."
         required: false
-        default: "amlogic"
+        default: "md1000"
         type: choice
         options:
           - allwinner
@@ -251,7 +255,7 @@ on:
       armbian_kernel:
         description: "Select kernel version."
         required: false
-        default: "6.12.y_6.18.y"
+        default: "6.18.y"
         type: choice
         options:
           - 5.10.y
@@ -268,9 +272,10 @@ on:
       kernel_repo:
         description: "Set the kernel repository."
         required: false
-        default: "ophub/kernel"
+        default: "w2xg2022/armbian"
         type: choice
         options:
+          - w2xg2022/armbian
           - ophub/kernel
       kernel_usage:
         description: "Set the tags of the stable kernel."
@@ -324,17 +329,17 @@ jobs:
       - name: Set build matrix based on set_release input
         id: set-matrix
         run: |
-          if [[ "${{ inputs.set_release }}" == "all" ]]; then
+          if [[ "${{ inputs.set_release || 'trixie' }}" == "all" ]]; then
             MATRIX='{"include":[{"release":"trixie"},{"release":"bookworm"},{"release":"resolute"},{"release":"noble"}]}'
           else
-            MATRIX='{"include":[{"release":"${{ inputs.set_release }}"}]}'
+            MATRIX='{"include":[{"release":"${{ inputs.set_release || 'trixie' }}"}]}'
           fi
           echo "matrix=${MATRIX}" >> "${GITHUB_OUTPUT}"
 
   build:
     needs: setup
     runs-on: ubuntu-24.04
-    if: ${{ github.event.repository.owner.id == github.event.sender.id }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' && github.event.repository.owner.id == github.event.sender.id }}
     permissions:
       contents: write
 
@@ -438,7 +443,7 @@ jobs:
 
           # Display disk usage after cleanup
           df -hT ${PWD}
-          echo "build_tag=Armbian_${{ matrix.release }}_arm64_${{ inputs.armbian_edition }}_$(date +"%Y.%m")" >> ${GITHUB_ENV}
+          echo "build_tag=Armbian_${{ matrix.release }}_arm64_${{ inputs.armbian_edition || 'server' }}_$(date +"%Y.%m")" >> ${GITHUB_ENV}
           echo "status=success" >> ${GITHUB_OUTPUT}
 
       - name: Upload Armbian image to Release
@@ -459,13 +464,13 @@ jobs:
         with:
           build_target: armbian
           armbian_path: build/output/images/*.img.gz
-          armbian_board: ${{ inputs.armbian_board }}
-          armbian_kernel: ${{ inputs.armbian_kernel }}
+          armbian_board: ${{ inputs.armbian_board || 'md1000' }}
+          armbian_kernel: ${{ inputs.armbian_kernel || '6.18.y' }}
           auto_kernel: true
-          kernel_repo: ${{ inputs.kernel_repo }}
-          kernel_usage: ${{ inputs.kernel_usage }}
-          armbian_fstype: ${{ inputs.armbian_fstype }}
-          builder_name: ${{ inputs.builder_name }}
+          kernel_repo: ${{ inputs.kernel_repo || 'w2xg2022/armbian' }}
+          kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
+          armbian_fstype: ${{ inputs.armbian_fstype || 'ext4' }}
+          builder_name: ${{ inputs.builder_name || 'ophub' }}
 
       - name: Upload rebuilt images to Release
         uses: ophub/upload-to-releases@main
