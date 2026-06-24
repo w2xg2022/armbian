@@ -464,7 +464,7 @@ jobs:
         with:
           build_target: armbian
           armbian_path: build/output/images/*.img.gz
-          armbian_board: ${{ inputs.armbian_board || 'md1000' }}
+          armbian_board: ${{ inputs.armbian_board || vars.MONTHLY_BOARDS || 'md1000' }}
           armbian_kernel: ${{ inputs.armbian_kernel || '6.18.y' }}
           auto_kernel: true
           kernel_repo: ${{ inputs.kernel_repo || 'w2xg2022/armbian' }}
