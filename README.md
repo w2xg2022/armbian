@@ -16,12 +16,12 @@
 <table>
 <thead>
 <tr>
-<th nowrap>品牌</th><th nowrap>型号</th><th nowrap>芯片</th><th nowrap>架构</th><th nowrap>RAM+ROM</th><th>固件</th>
+<th nowrap>品牌</th><th nowrap>型号</th><th nowrap>芯片</th><th nowrap>架构</th><th nowrap>RAM+ROM</th><th nowrap>机型代号</th><th>固件</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td><a href="https://github.com/w2xg2022/armbian/releases">Releases</a>（trixie）</td>
+<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td><a href="https://github.com/w2xg2022/armbian/releases">Releases</a>（trixie）</td>
 </tr>
 </tbody>
 </table>
@@ -32,7 +32,7 @@
 
 ### 方法一：直接下载（最简单）
 
-到 [Releases](https://github.com/w2xg2022/armbian/releases) 下载文件名含 `md1000` 的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
+到 [Releases](https://github.com/w2xg2022/armbian/releases) 下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
 
 ### 方法二：云编译（GitHub Actions，推荐）
 
@@ -48,10 +48,7 @@ gh workflow run compile-kernel.yml --repo w2xg2022/armbian
 1. **Compile the kernel** —— 默认从 `armbian-kernel@main` 编译 6.18.y 内核，发布到本仓 `kernel_stable`。
 2. 内核成功后**自动触发** **Build Armbian arm64 server image** —— 打包固件并上传到 Releases。
 
-要编译**哪些机型**，由仓库变量 **`MONTHLY_BOARDS`** 决定（Settings → Secrets and variables → Actions → Variables）：
-
-- 当前值：`md1000`
-- 多机型用 `_` 串接，例如 `md1000_rock5b`
+要编译**哪些机型**，由仓库变量 **`MONTHLY_BOARDS`** 决定（Settings → Secrets and variables → Actions → Variables）：填入对应**机型代号**（见上表），多机型用 `_` 串接，例如 `md1000_rock5b`（当前值：`md1000`）。
 
 > 每月 1 号也会按上述流程**自动**出一次最新固件。
 
@@ -68,8 +65,8 @@ sudo apt-get install -y $(curl -fsSL https://ophub.org/ubuntu2404-build-armbian-
 # ① 编译内核（来源 = 我们自己的内核仓）
 sudo ./recompile -k 6.18.y -r w2xg2022/armbian-kernel@main
 
-# ② 打包 md1000 固件（需先准备 Armbian rootfs 基础镜像，详见上游文档）
-sudo ./rebuild -b md1000 -k 6.18.y -r w2xg2022/armbian
+# ② 打包固件，<机型代号> 见上表（需先准备 Armbian rootfs 基础镜像，详见上游文档）
+sudo ./rebuild -b <机型代号> -k 6.18.y -r w2xg2022/armbian   # 例：-b md1000
 ```
 
 > 本地编译的完整参数、写入 eMMC（`armbian-install`）、内核更新（`armbian-update`）等用法，参见上游文档：[ophub/amlogic-s9xxx-armbian](https://github.com/ophub/amlogic-s9xxx-armbian)。
