@@ -30,17 +30,19 @@
 
 ## 如何获取固件
 
-### 方法一：直接下载（最简单）
+### 方法一：直接下载（普通用户推荐）
 
 到 [Releases](https://github.com/w2xg2022/armbian/releases) 下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
 
-### 方法二：云编译（GitHub Actions，推荐）
+### 方法二：云编译（GitHub Actions）
 
-在本仓库 **Actions** 页面手动触发，或用 `gh` 命令行：
+> ⚠️ 此方式面向**维护者 / 想自行编译的人**。GitHub 不允许在他人仓库触发 Actions，所以你需要先把本仓库 **Fork 到自己的账号**，在**你自己的 Fork** 里运行（只想要现成固件，请用方法一）。
+
+在自己 Fork 的 **Actions** 页面手动触发，或用 `gh` 命令行（把 `<你的账号>` 换成你的 GitHub 账号）：
 
 ```bash
 # 触发内核编译；成功后会自动接力打包固件
-gh workflow run compile-kernel.yml --repo w2xg2022/armbian
+gh workflow run compile-kernel.yml --repo <你的账号>/armbian
 ```
 
 完整流程：
