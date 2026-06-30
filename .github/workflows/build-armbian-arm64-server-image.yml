@@ -7,10 +7,6 @@ name: Build Armbian arm64 server image
 
 on:
   repository_dispatch:
-  workflow_run:
-    workflows: ["Compile the kernel"]
-    types:
-      - completed
   workflow_dispatch:
     inputs:
       set_release:
@@ -339,7 +335,7 @@ jobs:
   build:
     needs: setup
     runs-on: ubuntu-24.04
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' && github.event.repository.owner.id == github.event.sender.id }}
+    if: ${{ github.event.repository.owner.id == github.event.sender.id }}
     permissions:
       contents: write
 

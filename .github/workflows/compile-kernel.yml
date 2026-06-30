@@ -123,6 +123,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Sync armbian-kernel from upstream ophub/linux-6.18.y
+        if: ${{ github.event_name == 'schedule' }}
+        run: gh repo sync w2xg2022/armbian-kernel --branch main
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+
       - name: Initialize the build environment
         id: init
         env:
