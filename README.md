@@ -41,18 +41,19 @@
 在自己 Fork 的 **Actions** 页面手动触发，或用 `gh` 命令行（把 `<你的账号>` 换成你的 GitHub 账号）：
 
 ```bash
-# 触发内核编译；成功后会自动接力打包固件
+# ① 先编译内核（编译前会自动 sync 上游最新版，确保内核不落后）
 gh workflow run compile-kernel.yml --repo <你的账号>/armbian
+
+# ② 内核好了之后，再打包固件
+gh workflow run build-armbian-arm64-server-image.yml --repo <你的账号>/armbian
 ```
 
-完整流程：
+**两步需要手动依次触发**（当前未开启自动接力，也未开启每月定时任务；待适配型号增多、仓库稳定后再考虑恢复自动化）：
 
-1. **Compile the kernel** —— 默认从 `armbian-kernel@main` 编译 6.18.y 内核，发布到本仓 `kernel_stable`。
-2. 内核成功后**自动触发** **Build Armbian arm64 server image** —— 打包固件并上传到 Releases。
+1. **Compile the kernel** —— 编译前先把 [armbian-kernel](https://github.com/w2xg2022/armbian-kernel) 同步到 ophub/linux-6.18.y 最新版，再编译 6.18.y 内核，发布到本仓 `kernel_stable`。
+2. **Build Armbian arm64 server image** —— 打包固件（trixie 用户空间在打包当下从官方源现装，天生最新）并上传到 Releases。
 
-要编译**哪些机型**，由仓库变量 **`MONTHLY_BOARDS`** 决定（Settings → Secrets and variables → Actions → Variables）：填入对应**机型代号**（见上表），多机型用 `_` 串接，例如 `md1000_rock5b`（当前值：`md1000`）。
-
-> 每月 1 号也会按上述流程**自动**出一次最新固件。
+要打包**哪个机型**，触发 `build-armbian-arm64-server-image.yml` 时用 `armbian_board` 参数指定（见上表「机型代号」列），默认值为 `md1000`。
 
 ### 方法三：git 到本地编译（在 Ubuntu 22.04 / 24.04，x86 或 arm64）
 
