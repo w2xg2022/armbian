@@ -17,6 +17,7 @@ on:
         type: choice
         options:
           - w2xg2022/armbian-kernel@main
+          - w2xg2022/armbian-kernel@5.15
           - unifreq
           - ophub
       kernel_version:
