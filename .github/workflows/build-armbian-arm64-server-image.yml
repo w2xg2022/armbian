@@ -249,22 +249,15 @@ on:
           - zk-r39a
           - zysj
       armbian_kernel:
-        description: "Select kernel version."
+        description: "Kernel version: series (e.g. 6.18.y) or specific (e.g. 6.18.32)."
         required: false
         default: "6.18.y"
-        type: choice
-        options:
-          - 5.10.y
-          - 5.15.y
-          - 6.1.y
-          - 6.6.y
-          - 6.12.y
-          - 6.18.y
-          - 5.10.y_5.15.y
-          - 6.1.y_6.6.y
-          - 6.12.y_6.18.y
-          - 6.1.y_6.12.y
-          - 6.1.y_6.18.y
+        type: string
+      auto_kernel:
+        description: "Auto use the latest kernel in the series (set false to pin a specific version)."
+        required: false
+        default: true
+        type: boolean
       kernel_repo:
         description: "Set the kernel repository."
         required: false
@@ -462,7 +455,7 @@ jobs:
           armbian_path: build/output/images/*.img.gz
           armbian_board: ${{ inputs.armbian_board || vars.MONTHLY_BOARDS || 'md1000' }}
           armbian_kernel: ${{ inputs.armbian_kernel || '6.18.y' }}
-          auto_kernel: true
+          auto_kernel: ${{ inputs.auto_kernel }}
           kernel_repo: ${{ inputs.kernel_repo || 'w2xg2022/armbian' }}
           kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
           armbian_fstype: ${{ inputs.armbian_fstype || 'ext4' }}
