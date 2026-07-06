@@ -124,7 +124,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Sync armbian-kernel from upstream ophub/linux-6.18.y
-        run: gh repo sync w2xg2022/armbian-kernel --branch main
+        run: gh repo sync w2xg2022/armbian-kernel --branch main || true
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
