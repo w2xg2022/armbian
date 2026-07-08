@@ -617,6 +617,14 @@ compile_env() {
     # Clear kernel signature
     sed -i "s|CONFIG_LOCALVERSION=.*|CONFIG_LOCALVERSION=\"\"|" .config
 
+    # es4all: enable KEXEC only for the -kexec kernel variant (custom_name contains
+    # 'kexec'), for the MD1000 USB->ROCKNIX kexec dual-boot. Original -ophub untouched.
+    if [[ "${custom_name}" == *kexec* ]]; then
+        echo -e "${INFO} Enabling CONFIG_KEXEC for kexec variant..."
+        scripts/config -e KEXEC
+        scripts/config -e KEXEC_FILE 2>/dev/null || true
+    fi
+
     # Enable/Disabled Linux Kernel Clang LTO
     [[ "${toolchain_name}" == "clang" ]] && {
         kernel_x="$(echo "${kernel_version}" | cut -d '.' -f1)"
