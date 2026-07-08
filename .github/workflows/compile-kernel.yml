@@ -85,6 +85,7 @@ on:
         type: choice
         options:
           - -ophub
+          - -ophub-kexec
           - -yourname
 
 env:
