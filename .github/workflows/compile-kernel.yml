@@ -208,6 +208,7 @@ jobs:
           delete_source: ${{ inputs.delete_source }}
           kernel_package: ${{ inputs.kernel_package }}
           kernel_sign: ${{ inputs.kernel_sign }}
+          kernel_config: ${{ contains(inputs.kernel_sign, 'kexec') && 'kernel-config' || '' }}
           kernel_toolchain: ${{ inputs.kernel_toolchain }}
           ccache_clear: ${{ inputs.ccache_clear }}
           docker_hostpath: /builder
