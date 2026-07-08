@@ -578,7 +578,7 @@ CONFIG_DMI=y
 #
 # Power management options
 #
-# CONFIG_SUSPEND is not set
+CONFIG_SUSPEND=y
 # CONFIG_HIBERNATION is not set
 CONFIG_PM=y
 # CONFIG_PM_DEBUG is not set
