@@ -21,7 +21,7 @@ on:
           - resolute
           - noble
       kexec_variant:
-        description: "This build uses a kexec-enabled kernel (kernel_sign=-ophub-kexec); rename output to insert -kexec after board name"
+        description: "kexec variant: pull kernel from kernel_stable_kexec release AND rename output image to insert -kexec after board name"
         required: false
         default: false
         type: boolean
@@ -462,7 +462,7 @@ jobs:
           armbian_kernel: ${{ inputs.armbian_kernel || '6.18.y' }}
           auto_kernel: ${{ inputs.auto_kernel }}
           kernel_repo: ${{ inputs.kernel_repo || 'w2xg2022/armbian' }}
-          kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
+          kernel_usage: ${{ inputs.kernel_usage || (inputs.kexec_variant && 'stable_kexec') || 'stable' }}
           armbian_fstype: ${{ inputs.armbian_fstype || 'ext4' }}
           builder_name: ${{ inputs.builder_name || 'ophub' }}
 

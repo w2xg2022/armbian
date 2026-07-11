@@ -218,7 +218,8 @@ jobs:
         uses: ophub/upload-to-releases@main
         if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() }}
         with:
-          tag: kernel_stable
+          # kexec 变体上传到独立 tag，避免与普通版同名 tar.gz 互相覆盖
+          tag: ${{ contains(inputs.kernel_sign, 'kexec') && 'kernel_stable_kexec' || 'kernel_stable' }}
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
           allow_updates: true
           remove_artifacts: false
