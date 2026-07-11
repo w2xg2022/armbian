@@ -20,6 +20,11 @@ on:
           - bookworm
           - resolute
           - noble
+      kexec_variant:
+        description: "This build uses a kexec-enabled kernel (kernel_sign=-ophub-kexec); rename output to insert -kexec after board name"
+        required: false
+        default: false
+        type: boolean
       armbian_board:
         description: "Select device board."
         required: false
@@ -460,6 +465,23 @@ jobs:
           kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
           armbian_fstype: ${{ inputs.armbian_fstype || 'ext4' }}
           builder_name: ${{ inputs.builder_name || 'ophub' }}
+
+      - name: Rename kexec-variant image (append -kexec after board name)
+        if: ${{ inputs.kexec_variant && env.PACKAGED_STATUS == 'success' && !cancelled() }}
+        run: |
+          set -e
+          board="${{ inputs.armbian_board || vars.MONTHLY_BOARDS || 'md1000' }}"
+          for gz in "${{ env.PACKAGED_OUTPUTPATH }}"/*"_${board}_"*.img.gz; do
+            [ -f "${gz}" ] || continue
+            new_gz="${gz/_${board}_/_${board}-kexec_}"
+            echo "[kexec-rename] ${gz} -> ${new_gz}"
+            gunzip -c "${gz}" > "${gz%.gz}"
+            img="${gz%.gz}"
+            new_img="${new_gz%.gz}"
+            mv "${img}" "${new_img}"
+            gzip "${new_img}"
+            rm -f "${gz}"
+          done
 
       - name: Upload rebuilt images to Release
         uses: ophub/upload-to-releases@main
