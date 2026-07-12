@@ -462,7 +462,9 @@ jobs:
           armbian_kernel: ${{ inputs.armbian_kernel || '6.18.y' }}
           auto_kernel: ${{ inputs.auto_kernel }}
           kernel_repo: ${{ inputs.kernel_repo || 'w2xg2022/armbian' }}
-          kernel_usage: ${{ inputs.kernel_usage || (inputs.kexec_variant && 'stable_kexec') || 'stable' }}
+          # kexec_variant 必须放最前面：kernel_usage 有默认值 'stable'，若写在前会永远短路，
+          # 导致 kexec 分支变死码（踩过坑：kexec 镜像装成普通内核）。
+          kernel_usage: ${{ inputs.kexec_variant && 'stable_kexec' || inputs.kernel_usage || 'stable' }}
           armbian_fstype: ${{ inputs.armbian_fstype || 'ext4' }}
           builder_name: ${{ inputs.builder_name || 'ophub' }}
 
