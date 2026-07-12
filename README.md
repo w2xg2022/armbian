@@ -6,7 +6,7 @@
 
 适配成果（设备树 dts、驱动、机型定义 model_database）也会通过 Pull Request **回馈共享到上游 ophub**，让更多人受益。
 
-- 📦 固件下载：[Releases](https://github.com/w2xg2022/armbian/releases)
+- 📦 固件下载：[Releases · Armbian_trixie_arm64_server_2026.07](https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07)
 - 🐧 内核源码：[w2xg2022/armbian-kernel](https://github.com/w2xg2022/armbian-kernel)（当前 6.18.y）
 - 🗄️ FnOS 固件：[w2xg2022/fnnas](https://github.com/w2xg2022/fnnas)
 - 默认账号 `root` ／ 默认密码 `1234`
@@ -16,12 +16,12 @@
 <table>
 <thead>
 <tr>
-<th nowrap>品牌</th><th nowrap>型号</th><th nowrap>芯片</th><th nowrap>架构</th><th nowrap>RAM+ROM</th><th nowrap>机型代号</th><th>固件</th>
+<th nowrap>品牌</th><th nowrap>型号</th><th nowrap>芯片</th><th nowrap>架构</th><th nowrap>RAM+ROM</th><th nowrap>机型代号</th><th nowrap>固件</th><th>备注</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td><a href="https://github.com/w2xg2022/armbian/releases">Releases</a>（trixie）</td>
+<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a>（trixie）</td><td nowrap>普通版 + kexec 版</td>
 </tr>
 </tbody>
 </table>
@@ -32,7 +32,14 @@
 
 ### 方法一：直接下载（普通用户推荐）
 
-到 [Releases](https://github.com/w2xg2022/armbian/releases) 下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
+到 [Releases](https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07) 下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
+
+#### 普通版 vs kexec 版
+
+同一机型的固件有两种，看机型代号后面**带不带 `-kexec`**：
+
+- **普通版**（如 `..._md1000_...`）：常规启动，绝大多数情况用这个。
+- **kexec 版**（如 `..._md1000-kexec_...`）：内核额外开启了 `CONFIG_KEXEC`，支持「先起一个内核、再由它直接跳转去启动另一个内核 / 系统」。**主要用途是帮助从 U 盘 / TF 卡启动**——有些盒子原厂 bootloader 不认 U 盘启动，用 kexec 就能绕过这个限制，让系统从 U 盘跑起来。用不到这个功能就选普通版。
 
 ### 方法二：云编译（GitHub Actions）
 
