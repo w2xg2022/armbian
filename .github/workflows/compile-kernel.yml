@@ -124,10 +124,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Sync armbian-kernel from upstream ophub/linux-6.18.y
-        run: gh repo sync w2xg2022/armbian-kernel --branch main || true
+      # main 是上游 ophub 的纯镜子，不放我们自己的 commit（我们的东西走 6.18）。
+      # ⚠️ 必须带 --force：上游若改写历史(force-push)，不带 --force 的 sync 会因分岔
+      # 而失败，再被 `|| true` 吞掉 → main 静默停摆、揹着上游已丢弃的 commit 越飘越远。
+      # 2026-07-22 踩过：main 揹了 8 个 ophub 自己丢弃的 commit，导致从 main 开分支
+      # 发 PR 时平白多出 11 个 commit / 12 个档案。故这里既加 --force 也不再吞错误。
+      - name: Sync armbian-kernel main from upstream (mirror, hard reset)
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh repo sync w2xg2022/armbian-kernel --branch main --force || {
+            echo "::error::sync main from upstream failed - main may be stale, aborting"
+            exit 1
+          }
 
       # 把刚同步好的 main(上游镜像) 合并进开发分支 6.18，让 6.18 始终是
       # “上游 + 我们的适配” 超集。仅在编译 6.18 时执行（绝不能并进 5.15，
