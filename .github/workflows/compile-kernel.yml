@@ -129,14 +129,20 @@ jobs:
       # 而失败，再被 `|| true` 吞掉 → main 静默停摆、揹着上游已丢弃的 commit 越飘越远。
       # 2026-07-22 踩过：main 揹了 8 个 ophub 自己丢弃的 commit，导致从 main 开分支
       # 发 PR 时平白多出 11 个 commit / 12 个档案。故这里既加 --force 也不再吞错误。
-      - name: Sync armbian-kernel main from upstream (mirror, hard reset)
+      # ⚠️ 不能用 `gh repo sync --force`：对「远端 fork」它走 GitHub merge-upstream
+      # API，只能快进；我们 ahead 时它判定已同步、直接 exit 0 什么都不做（--force
+      # 只对本地 repo 生效）。必须用 git refs API 强制把 main 指到上游 HEAD。
+      - name: Sync armbian-kernel main from upstream (true mirror, force ref)
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          gh repo sync w2xg2022/armbian-kernel --branch main --force || {
-            echo "::error::sync main from upstream failed - main may be stale, aborting"
-            exit 1
-          }
+          set -e
+          UP="$(gh api repos/ophub/linux-6.18.y/commits/main -q .sha)"
+          [ -n "${UP}" ] || { echo "::error::cannot read upstream main sha"; exit 1; }
+          echo "upstream ophub/main = ${UP}"
+          gh api -X PATCH repos/w2xg2022/armbian-kernel/git/refs/heads/main \
+            -f sha="${UP}" -F force=true -q .object.sha
+          echo "main mirrored to upstream."
 
       # 把刚同步好的 main(上游镜像) 合并进开发分支 6.18，让 6.18 始终是
       # “上游 + 我们的适配” 超集。仅在编译 6.18 时执行（绝不能并进 5.15，
