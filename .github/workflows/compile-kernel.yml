@@ -129,6 +129,29 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
+      # 把刚同步好的 main(上游镜像) 合并进开发分支 6.18，让 6.18 始终是
+      # “上游 + 我们的适配” 超集。仅在编译 6.18 时执行（绝不能并进 5.15，
+      # 那是不同内核版本）。用 GitHub server-side merges API，免 clone。
+      # 有冲突就让 build 红灯停，不吞掉——正常情况我们的东西已上游化，几乎不撞。
+      - name: Merge upstream main into dev branch 6.18
+        if: contains(inputs.kernel_source, '@6.18')
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set +e
+          out=$(gh api --method POST repos/w2xg2022/armbian-kernel/merges \
+            -f base=6.18 -f head=main \
+            -f commit_message="ci: merge upstream main into 6.18" 2>&1)
+          rc=$?
+          echo "$out"
+          if [ $rc -eq 0 ]; then
+            echo "merge into 6.18 ok (merged or already up-to-date)"
+            exit 0
+          fi
+          echo "$out" | grep -qi conflict && echo "::error::merge main->6.18 CONFLICT, resolve manually"
+          echo "::error::merge main->6.18 step failed (rc=$rc)"
+          exit 1
+
       - name: Initialize the build environment
         id: init
         env:
