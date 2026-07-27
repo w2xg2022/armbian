@@ -454,7 +454,14 @@ jobs:
           gh_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Rebuild Armbian for target boards
-        uses: ophub/amlogic-s9xxx-armbian@main
+        # 用本仓库自己的 action 而不是 ophub/amlogic-s9xxx-armbian@main:
+        # 上游 action 只认它自己那份 build-armbian 文件树,里面没有我们未上游化的
+        # 板子(如 p6),会报 "Missing [ KERNEL_TAGS ] settings" 直接停。
+        # armbian_files 输入只能往 common-files 灌,送不进 different-files/
+        # (armbianEnv.txt、boot.cmd、boot.scr),而 rockchip 平台的默认那份是
+        # 给 rk3399 用的(overlay_prefix=rk3399),套到 RK3566 上开不起来。
+        # 本仓库的 rebuild 引擎与 action.yml 已与上游逐字节一致。
+        uses: ./
         if: ${{ steps.clean.outputs.status == 'success' && !cancelled() }}
         with:
           build_target: armbian
