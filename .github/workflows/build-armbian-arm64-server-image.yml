@@ -401,7 +401,13 @@ jobs:
           df -hT ${PWD}
           git clone -q --single-branch --depth=1 --branch=main https://github.com/armbian/build.git build
           ln -sf /builder/build ${{ github.workspace }}/build
-          ln -sf /builder/build /home/runner/work/_actions/ophub/amlogic-s9xxx-armbian/main/build
+          # 这条只在使用 ophub 上游 action 时才需要。本仓库的打包步骤已改用
+          # uses: ./ (原因见下方注释),该目录不会存在,缺了它不是错误。
+          # 注意用 if 而不是 [[ ]] && ,否则条件为假时返回1,会被 bash -e 判定失败。
+          ophub_action_dir="/home/runner/work/_actions/ophub/amlogic-s9xxx-armbian/main"
+          if [[ -d "${ophub_action_dir}" ]]; then
+              ln -sf /builder/build "${ophub_action_dir}/build"
+          fi
           echo "status=success" >> ${GITHUB_OUTPUT}
 
       - name: Compile Armbian [ ${{ matrix.release }} ]
