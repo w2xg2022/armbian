@@ -122,6 +122,7 @@ on:
           - orangepi-5-pro
           - orangepi-5b
           - orangepi-zero3
+          - p6
           - painet-p3
           - panther-x2
           - photonicat
