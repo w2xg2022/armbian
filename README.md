@@ -6,7 +6,7 @@
 
 适配成果（设备树 dts、驱动、机型定义 model_database）也会通过 Pull Request **回馈共享到上游 ophub**，让更多人受益。
 
-- 📦 固件下载：[Releases · Armbian_trixie_arm64_server_2026.07](https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07)
+- 📦 固件下载：[Releases](https://github.com/w2xg2022/armbian/releases)（各机型对应的 Release 见下表「固件」列）
 - 🐧 内核源码：[w2xg2022/armbian-kernel](https://github.com/w2xg2022/armbian-kernel)（当前 6.18.y）
 - 🗄️ FnOS 固件：[w2xg2022/fnnas](https://github.com/w2xg2022/fnnas)
 - 默认账号 `root` ／ 默认密码 `1234`
@@ -23,6 +23,9 @@
 <tr>
 <td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a>（trixie）</td><td nowrap>普通版 + kexec 版</td>
 </tr>
+<tr>
+<td nowrap>PCDN 拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>arm64</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控；请用 6.18.60 版（6.18.40 版无遥控键表）</td>
+</tr>
 </tbody>
 </table>
 
@@ -32,7 +35,9 @@
 
 ### 方法一：直接下载（普通用户推荐）
 
-到 [Releases](https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07) 下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
+到 Releases（见上表「固件」列）下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
+
+- **YZD-S18**：板子没有焊 TF 卡座。先用 USB Burning Tool 刷 HK1Box 安卓固件，再把 Armbian 用 balenaEtcher 写入 SATA 硬盘（或 U 盘）直接启动；需要时可在 Armbian 里执行 `armbian-install` 写入 eMMC（会保留原 bootloader）。SATA 偶尔不识别时，完全断电几分钟再开机。
 
 #### 普通版 vs kexec 版
 
