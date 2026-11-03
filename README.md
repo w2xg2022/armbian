@@ -24,7 +24,7 @@
 <td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a>（trixie）</td><td nowrap>普通版 + kexec 版</td>
 </tr>
 <tr>
-<td nowrap>PCDN 拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>arm64</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控；请用 6.18.60 版（6.18.40 版无遥控键表）</td>
+<td nowrap>PCDN 拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>arm64</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控</td>
 </tr>
 </tbody>
 </table>
