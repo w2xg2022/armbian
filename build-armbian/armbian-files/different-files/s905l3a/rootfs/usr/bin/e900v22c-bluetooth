@@ -1,0 +1,41 @@
+#!/bin/bash
+# Bluetooth bring-up for UWE5621DS (SDIO-attached, exposed as /dev/ttyBT0 by sprdbt_tty).
+# Needs the WiFi side (uwe5621_bsp_sdio) loaded first: the BT channel shares the same chip.
+
+# Other s905l3a boxes (e.g. RTL8761B ones) have no UWE5621DS: nothing to do
+modinfo sprdbt_tty >/dev/null 2>&1 || exit 0
+
+BT_MAC_FILE="/var/lib/bluetooth/uwe5621-btmac.txt"
+PSKEY="/lib/firmware/bt_configure_pskey.ini"
+
+# Persistent, locally-administered MAC derived from machine-id (stable across reboots)
+if [[ ! -s "${BT_MAC_FILE}" ]]; then
+	mkdir -p "$(dirname "${BT_MAC_FILE}")"
+	seed="$(cat /etc/machine-id 2>/dev/null || echo "${RANDOM}${RANDOM}")"
+	hash="$(echo -n "${seed}-bt" | md5sum | cut -c1-12)"
+	first="$(printf %02X $(( (0x${hash:0:2} | 0x02) & 0xFE )))"
+	echo "${first}:${hash:2:2}:${hash:4:2}:${hash:6:2}:${hash:8:2}:${hash:10:2}" >"${BT_MAC_FILE}"
+fi
+bt_mac="$(tr -d "[:space:]" <"${BT_MAC_FILE}")"
+[[ "${bt_mac}" =~ ^([[:xdigit:]]{2}:){5}[[:xdigit:]]{2}$ ]] || { echo "invalid BT MAC: ${bt_mac}" >&2; exit 1; }
+
+# Wait for WiFi bsp (marlin) to be up so the chip is powered and firmware is loaded
+for _ in $(seq 1 30); do
+	[[ -d /sys/module/uwe5621_bsp_sdio ]] && break
+	modprobe uwe5621_bsp_sdio 2>/dev/null
+	sleep 1
+done
+modprobe sprdbt_tty || { echo "sprdbt_tty not available" >&2; exit 1; }
+
+# /dev/ttyBT0 appears after the tty driver binds
+for _ in $(seq 1 20); do
+	[[ -c /dev/ttyBT0 ]] && break
+	sleep 1
+done
+[[ -c /dev/ttyBT0 ]] || { echo "/dev/ttyBT0 not found" >&2; exit 1; }
+
+# Soft-blocked by default (rfkill bluetooth powers the BT channel on unblock)
+rfkill unblock bluetooth 2>/dev/null || rfkill unblock all
+
+[[ -f "${PSKEY}" ]] || echo "warning: ${PSKEY} missing, chip defaults will be used" >&2
+exec /usr/bin/hciattach_opi -n -s 1500000 /dev/ttyBT0 sprd 1500000 flow "${bt_mac}"

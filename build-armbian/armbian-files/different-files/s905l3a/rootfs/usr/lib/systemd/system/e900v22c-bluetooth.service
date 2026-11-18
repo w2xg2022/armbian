@@ -1,0 +1,14 @@
+[Unit]
+Description=Unisoc UWE5621DS Bluetooth (SDIO) for E900V22C
+After=local-fs.target
+Before=bluetooth.service
+Wants=bluetooth.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/e900v22c-bluetooth
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
