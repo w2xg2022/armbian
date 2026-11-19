@@ -252,6 +252,29 @@ jobs:
           docker_hostpath: /builder
           docker_image: ophub/armbian-${{ inputs.docker_image }}:arm64
 
+      # 映像编译(rebuild)只认不带签名后缀的 <版本>.tar.gz(内含 <版本>/ 目录)，
+      # 而内核编译产出的是 <版本>-ophub.tar.gz(内含 <版本>-ophub/)。这里自动补一份不带后缀的，
+      # 内部文件名保持原样(rebuild 靠 boot-<版本>-<签名>.tar.gz 取签名)，只改外层包名与目录名。
+      - name: Make suffix-less kernel package
+        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() }}
+        run: |
+          out="${{ env.PACKAGED_OUTPUTPATH }}"
+          for f in "${out}"/[0-9]*-*.tar.gz; do
+            [[ -f "${f}" ]] || continue
+            name="$(basename "${f}" .tar.gz)"   # 例: 6.18.64-ophub
+            ver="${name%%-*}"                   # 例: 6.18.64
+            tmp="$(mktemp -d)"
+            tar -xzf "${f}" -C "${tmp}"
+            if [[ ! -d "${tmp}/${name}" ]]; then
+              echo "skip ${f}: no ${name}/ inside"
+              continue
+            fi
+            mv "${tmp}/${name}" "${tmp}/${ver}"
+            tar -czf "${out}/${ver}.tar.gz" -C "${tmp}" "${ver}"
+            echo "made ${out}/${ver}.tar.gz from ${f}"
+          done
+          ls -l "${out}"
+
       - name: Upload Kernel to Release
         uses: ophub/upload-to-releases@main
         if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() }}
