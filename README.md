@@ -16,18 +16,18 @@
 <table>
 <thead>
 <tr>
-<th nowrap>品牌</th><th nowrap>型号</th><th nowrap>芯片</th><th nowrap>架构</th><th nowrap>容量</th><th nowrap>机型代号</th><th nowrap>固件</th><th>备注</th>
+<th nowrap>品牌</th><th nowrap>型号</th><th nowrap>芯片</th><th nowrap>容量</th><th nowrap>机型代号</th><th nowrap>固件</th><th>备注</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a><br>（trixie）</td><td nowrap>普通版 + kexec 版</td>
+<td nowrap>浪潮</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3503">MD1000</a></td><td nowrap>RK3566</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a><br>（trixie）</td><td nowrap>普通版 + kexec 版</td>
 </tr>
 <tr>
-<td nowrap>创维</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3768">E900V22C</a></td><td nowrap>S905L3A</td><td nowrap>arm64</td><td nowrap>2+8</td><td nowrap><code>s905l3a</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a><br>（trixie）</td><td>UWE5621 WiFi 与蓝牙可正常使用、百兆网口；无 TF 卡座；同硬件的 B863AV3.1-M2、UNT413A 等机型也适用</td>
+<td nowrap>创维</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3768">E900V22C</a></td><td nowrap>S905L3A</td><td nowrap>2+8</td><td nowrap><code>s905l3a</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a><br>（trixie）</td><td>UWE5621 WiFi 与蓝牙可正常使用；同硬件的 B863AV3.1-M2、UNT413A 等机型也适用</td>
 </tr>
 <tr>
-<td nowrap>PCDN<br>拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>arm64</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a><br>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控</td>
+<td nowrap>PCDN<br>拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a><br>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控</td>
 </tr>
 </tbody>
 </table>
@@ -50,8 +50,8 @@
 在自己 Fork 的 **Actions** 页面手动触发，或用 `gh` 命令行（把 `<你的账号>` 换成你的 GitHub 账号）：
 
 ```bash
-# ① 先编译内核（编译前会自动 sync 上游最新版，确保内核不落后）
-gh workflow run compile-kernel.yml --repo <你的账号>/armbian
+# ① 先编译内核（来源选 6.18 分支；编译前会自动 sync 上游最新版，确保内核不落后）
+gh workflow run compile-kernel.yml --repo <你的账号>/armbian -f kernel_source=w2xg2022/armbian-kernel@6.18
 
 # ② 内核好了之后，再打包固件
 gh workflow run build-armbian-arm64-server-image.yml --repo <你的账号>/armbian
@@ -59,7 +59,7 @@ gh workflow run build-armbian-arm64-server-image.yml --repo <你的账号>/armbi
 
 **两步需要手动依次触发**（当前未开启自动接力，也未开启每月定时任务；待适配型号增多、仓库稳定后再考虑恢复自动化）：
 
-1. **Compile the kernel** —— 编译前先把 [armbian-kernel](https://github.com/w2xg2022/armbian-kernel) 同步到 ophub/linux-6.18.y 最新版，再编译 6.18.y 内核，发布到本仓 `kernel_stable`。
+1. **Compile the kernel** —— 内核来源选 [armbian-kernel](https://github.com/w2xg2022/armbian-kernel) 的 `6.18` 分支（上方命令已指定；默认的 `main` 只是上游镜像，不含本仓的板子适配）。编译前会先同步上游 ophub/linux-6.18.y 最新版并合并进 `6.18`，再编译 6.18.y 内核，发布到本仓 `kernel_stable`。
 2. **Build Armbian arm64 server image** —— 打包固件（trixie 用户空间在打包当下从官方源现装，天生最新）并上传到 Releases。
 
 要打包**哪个机型**，触发 `build-armbian-arm64-server-image.yml` 时用 `armbian_board` 参数指定（见上表「机型代号」列），默认值为 `md1000`。
@@ -75,7 +75,7 @@ sudo apt-get update
 sudo apt-get install -y $(curl -fsSL https://ophub.org/ubuntu2404-build-armbian-depends)
 
 # ① 编译内核（来源 = 我们自己的内核仓）
-sudo ./recompile -k 6.18.y -r w2xg2022/armbian-kernel@main
+sudo ./recompile -k 6.18.y -r w2xg2022/armbian-kernel@6.18
 
 # ② 打包固件，<机型代号> 见上表（需先准备 Armbian rootfs 基础镜像，详见上游文档）
 sudo ./rebuild -b <机型代号> -k 6.18.y -r w2xg2022/armbian   # 例：-b md1000
@@ -85,7 +85,7 @@ sudo ./rebuild -b <机型代号> -k 6.18.y -r w2xg2022/armbian   # 例：-b md10
 
 ## 如何适配一块新板子
 
-1. 在 [armbian-kernel](https://github.com/w2xg2022/armbian-kernel) 的 `main` 加入该板设备树 `.dts`（必要时加驱动），编出 `.dtb`；
+1. 在 [armbian-kernel](https://github.com/w2xg2022/armbian-kernel) 的 `6.18` 分支（`main` 只是上游镜像，不放自己的提交）加入该板设备树 `.dts`（必要时加驱动），编出 `.dtb`；
 2. 在本仓 `build-armbian/armbian-files/common-files/etc/model_database.conf` 增加一行机型定义（`FDTFILE` 指向上一步的 dtb、`BUILD=yes`）；
 3. 把机型代号加入 `MONTHLY_BOARDS` 变量；
 4. 适配成功后，向 ophub 提交 Pull Request 共享成果。
