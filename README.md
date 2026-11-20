@@ -40,8 +40,8 @@
 
 到 Releases（见上表「固件」列）下载文件名含对应机型代号（见上表「机型代号」列）的 `.img.gz`，再按烧录方式选择：
 
-- **烧录到 U 盘 / TF 卡**：直接用 [Rufus](https://rufus.ie/) 选择 `.img.gz` 写入，**不需要解压**。
-- **烧录到 eMMC（如用 RKDevTool）**：需要**先解压**得到 `.img`，再用工具写入。
+- 烧录到 U 盘 / TF 卡：直接用 [Rufus](https://rufus.ie/) 选择 `.img.gz` 写入，**不需要解压**。
+- 烧录到 eMMC（如用 RKDevTool）：需要**先解压**得到 `.img`，再用工具写入。
 
 ### 方法二：云编译（GitHub Actions）
 
