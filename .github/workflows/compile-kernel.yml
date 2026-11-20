@@ -264,13 +264,15 @@ jobs:
             name="$(basename "${f}" .tar.gz)"   # 例: 6.18.64-ophub
             ver="${name%%-*}"                   # 例: 6.18.64
             tmp="$(mktemp -d)"
-            tar -xzf "${f}" -C "${tmp}"
+            # 输出目录由 docker 以 root 创建，runner 用户无写权限，故用 sudo（同时保留 root 属主）
+            sudo tar -xzf "${f}" -C "${tmp}"
             if [[ ! -d "${tmp}/${name}" ]]; then
               echo "skip ${f}: no ${name}/ inside"
               continue
             fi
-            mv "${tmp}/${name}" "${tmp}/${ver}"
-            tar -czf "${out}/${ver}.tar.gz" -C "${tmp}" "${ver}"
+            sudo mv "${tmp}/${name}" "${tmp}/${ver}"
+            sudo tar -czf "${out}/${ver}.tar.gz" -C "${tmp}" "${ver}"
+            sudo rm -rf "${tmp}"
             echo "made ${out}/${ver}.tar.gz from ${f}"
           done
           ls -l "${out}"
