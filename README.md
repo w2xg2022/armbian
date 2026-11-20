@@ -21,10 +21,10 @@
 </thead>
 <tbody>
 <tr>
-<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a>（trixie）</td><td nowrap>普通版 + kexec 版</td>
+<td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a><br>（trixie）</td><td nowrap>普通版 + kexec 版</td>
 </tr>
 <tr>
-<td nowrap>创维</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3768">E900V22C</a></td><td nowrap>S905L3A</td><td nowrap>arm64</td><td nowrap>2+8</td><td nowrap><code>s905l3a</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_resolute_arm64_server_2026.11">Releases</a>（resolute）</td><td>UWE5621 WiFi 与蓝牙可正常使用、百兆网口；无 TF 卡座；同硬件的 B863AV3.1-M2、UNT413A 等机型也适用</td>
+<td nowrap>创维</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3768">E900V22C</a></td><td nowrap>S905L3A</td><td nowrap>arm64</td><td nowrap>2+8</td><td nowrap><code>s905l3a</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a><br>（trixie）</td><td>UWE5621 WiFi 与蓝牙可正常使用、百兆网口；无 TF 卡座；同硬件的 B863AV3.1-M2、UNT413A 等机型也适用</td>
 </tr>
 <tr>
 <td nowrap>PCDN 拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>arm64</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控</td>
