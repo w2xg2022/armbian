@@ -24,6 +24,9 @@
 <td nowrap>浪潮</td><td nowrap>MD1000</td><td nowrap>RK3566</td><td nowrap>arm64</td><td nowrap>2+32</td><td nowrap><code>md1000</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.07">Releases</a>（trixie）</td><td nowrap>普通版 + kexec 版</td>
 </tr>
 <tr>
+<td nowrap>创维</td><td nowrap><a href="https://github.com/Calmact/e900v22c">E900V22C</a></td><td nowrap>S905L3A</td><td nowrap>arm64</td><td nowrap>2+16</td><td nowrap><code>s905l3a</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_resolute_arm64_server_2026.11">Releases</a>（resolute）</td><td>UWE5621 WiFi 与蓝牙可正常使用、百兆网口；无 TF 卡座；同硬件的 E900V22D、B863AV3.1-M2 等同代号机型亦适用</td>
+</tr>
+<tr>
 <td nowrap>PCDN 拆机板</td><td nowrap><a href="https://github.com/ophub/amlogic-s9xxx-armbian/issues/3759">YZD-S18</a></td><td nowrap>S905X3</td><td nowrap>arm64</td><td nowrap>4+8</td><td nowrap><code>s905x3-yzd-s18</code></td><td nowrap><a href="https://github.com/w2xg2022/armbian/releases/tag/Armbian_trixie_arm64_server_2026.11">Releases</a>（trixie）</td><td>千兆网口、板载 SATA（JMS578）、0xdd22 红外遥控</td>
 </tr>
 </tbody>
@@ -37,6 +40,7 @@
 
 到 Releases（见上表「固件」列）下载文件名含**对应机型代号**（见上表「机型代号」列）的 `.img.gz`，解压后用 balenaEtcher / RKDevTool 烧录到 TF 卡或 eMMC 即可。
 
+- **E900V22C（`s905l3a`）**：板子没有 TF 卡座，不能用 TF 卡启动；请改用 U 盘启动，需要时可在 Armbian 里执行 `armbian-install` 写入 eMMC。板载 UWE5621 无线网卡与蓝牙均可正常使用（蓝牙由开机服务 `e900v22c-bluetooth` 自动拉起）。
 - **YZD-S18**：板子没有焊 TF 卡座。先用 USB Burning Tool 刷 HK1Box 安卓固件，再把 Armbian 用 balenaEtcher 写入 SATA 硬盘（或 U 盘）直接启动；需要时可在 Armbian 里执行 `armbian-install` 写入 eMMC（会保留原 bootloader）。SATA 偶尔不识别时，完全断电几分钟再开机。
 
 #### 普通版 vs kexec 版
